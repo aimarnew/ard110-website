@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PECAHAN CERDAS CERMAT!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brown:#5D4037; --brown2:#4E342E; --cream:#FFF9EC; --cream2:#FFF3D9;
+  --orange:#FF8A3D; --orange2:#F5722A; --green:#4CAF50; --green2:#3B8C3F;
+  --blue:#42A5F5; --red:#EF5350; --yellow:#FFD93B; --pink:#FF7BAC;
+  --shadow:rgba(93,64,55,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:'Lilita One','Arial Rounded MT Bold','Comic Sans MS',cursive,sans-serif;
+  color:var(--brown2);background:#6BC6FF;touch-action:manipulation;
+}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+#app{position:fixed;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:10px;overflow-y:auto;overflow-x:hidden}
+#app::-webkit-scrollbar{width:8px}
+#app::-webkit-scrollbar-thumb{background:rgba(93,64,55,.4);border-radius:8px}
+.screen{display:none;width:100%;justify-content:center;align-items:center;min-height:100%}
+.screen.active{display:flex}
+.panel{
+  background:var(--cream);border:4px solid var(--brown);border-radius:26px;
+  box-shadow:0 10px 0 var(--shadow);padding:18px 20px 20px;
+  width:min(660px,96vw);position:relative;animation:fadeup .35s ease-out;
+  margin:auto;
+}
+.panel.game{width:min(780px,97vw)}
+
+/* ====== tombol dasar kartun ====== */
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;padding:0}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--orange);color:#fff;border:4px solid var(--brown);border-radius:18px;
+  box-shadow:0 6px 0 var(--brown);padding:10px 18px;
+  font-size:clamp(17px,2.6vw,22px);letter-spacing:.5px;
+  transition:transform .06s ease,box-shadow .06s ease;position:relative;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--brown)}
+.btn.green{background:var(--green)} .btn.blue{background:var(--blue)} .btn.red{background:var(--red)}
+.btn .ic{width:1.15em;height:1.15em;flex:0 0 auto;fill:#fff}
+.btn-start{width:100%;padding:14px;font-size:clamp(24px,4.5vw,34px);background:var(--green);animation:pulse 1.6s ease-in-out infinite}
+.btn-row{display:flex;gap:12px;margin-top:12px}
+.btn-row .btn{flex:1}
+.iconbtn{
+  width:46px;height:46px;border-radius:50%;background:var(--cream);
+  border:3px solid var(--brown);box-shadow:0 4px 0 var(--brown);
+  display:inline-flex;align-items:center;justify-content:center;position:relative;
+  transition:transform .06s ease,box-shadow .06s ease;flex:0 0 auto;
+}
+.iconbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--brown)}
+.iconbtn svg{width:24px;height:24px;fill:var(--brown)}
+.iconbtn .slash{position:absolute;inset:0;display:none}
+.iconbtn.off{opacity:.85}
+.iconbtn.off .slash{display:block}
+.iconbtn.off svg:not(.slashic){opacity:.45}
+#sysBtns{position:fixed;top:10px;right:12px;z-index:50;display:flex;gap:8px}
+
+/* ====== beranda ====== */
+.home-head{display:flex;align-items:center;justify-content:center;gap:4px;position:relative;margin-bottom:4px}
+#homeTitle{width:min(76%,430px);animation:floaty 3.2s ease-in-out infinite;filter:drop-shadow(0 5px 0 rgba(93,64,55,.3))}
+#logoWrap{width:min(26%,128px);animation:bob 2.6s ease-in-out infinite;flex:0 0 auto;margin-left:-8px}
+.section-label{
+  display:flex;align-items:center;gap:8px;font-size:clamp(15px,2.4vw,19px);
+  color:var(--brown);margin:14px 2px 8px;letter-spacing:.5px;
+}
+.section-label svg{width:20px;height:20px;fill:var(--orange2)}
+.optgrid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tbtn{
+  flex:1;min-width:96px;background:var(--cream2);border:3px solid var(--brown);border-radius:16px;
+  box-shadow:0 5px 0 var(--brown);padding:9px 6px 8px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  transition:transform .06s ease,box-shadow .06s ease,background .15s;position:relative;
+}
+.tbtn:hover{transform:translateY(-2px)}
+.tbtn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--brown)}
+.tbtn .big{font-size:clamp(18px,3vw,25px);color:var(--brown2);line-height:1.05}
+.tbtn .desc{font-size:clamp(10.5px,1.7vw,13px);color:#8D6E63;line-height:1.15;font-family:'Comic Sans MS','Lilita One',cursive}
+.tbtn.sel{background:var(--green);border-color:var(--green2)}
+.tbtn.sel .big{color:#fff}.tbtn.sel .desc{color:#E4F7E4}
+.tbtn.sel::after{
+  content:"";position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;
+  background:var(--yellow);border:3px solid var(--brown);animation:pop .25s ease-out;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%235D4037" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>');
+  background-size:16px;background-repeat:no-repeat;background-position:center;
+}
+.home-foot{margin-top:16px}
+
+/* ====== petunjuk ====== */
+.help-top{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.backbtn{padding:8px 14px;font-size:clamp(14px,2.2vw,18px)}
+.help-bubble{
+  display:flex;align-items:center;gap:12px;background:var(--cream2);border:3px dashed var(--orange);
+  border-radius:18px;padding:12px 14px;margin:8px 0 12px;
+}
+.help-bubble .mascot{width:84px;flex:0 0 auto;animation:bob 2.4s ease-in-out infinite}
+.bubble-txt{
+  background:#fff;border:3px solid var(--brown);border-radius:14px;padding:10px 14px;position:relative;
+  font-size:clamp(16px,2.8vw,22px);color:var(--brown);line-height:1.3;
+}
+.bubble-txt::before{
+  content:"";position:absolute;left:-14px;top:50%;transform:translateY(-50%);
+  border:8px solid transparent;border-right-color:var(--brown);
+}
+.help-list{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.help-item{
+  display:flex;gap:11px;align-items:flex-start;background:#fff;border:3px solid #E8D9BC;
+  border-radius:14px;padding:9px 12px;font-size:clamp(13px,2vw,16.5px);line-height:1.4;
+}
+.help-item .hico{
+  width:38px;height:38px;flex:0 0 auto;border-radius:11px;border:3px solid var(--brown);
+  display:flex;align-items:center;justify-content:center;background:var(--yellow);
+}
+.help-item .hico svg{width:22px;height:22px;fill:var(--brown)}
+.help-item b{color:var(--orange2)}
+.tipchip{
+  margin-top:12px;background:#FFF6DF;border:3px solid var(--brown);border-radius:14px;
+  padding:9px 12px;font-size:clamp(12px,2vw,15px);color:var(--brown);display:flex;gap:9px;align-items:center;
+}
+.tipchip svg{width:20px;height:20px;fill:var(--orange2);flex:0 0 auto}
+
+/* ====== pengaturan ====== */
+.set-card{background:#fff;border:3px solid #E8D9BC;border-radius:16px;padding:12px 14px;margin-top:11px}
+.set-title{font-size:clamp(15px,2.4vw,19px);color:var(--brown);display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.set-title svg{width:20px;height:20px;fill:var(--orange2)}
+.set-hint{font-size:clamp(11px,1.8vw,13px);color:#A1887F;font-family:'Comic Sans MS','Lilita One',cursive;margin-bottom:6px}
+.slider-row{display:flex;align-items:center;gap:10px;margin:7px 0}
+.slider-row .sl-label{width:120px;flex:0 0 auto;font-size:clamp(12px,1.9vw,15px);color:var(--brown2)}
+.slider-row .sl-val{
+  width:64px;flex:0 0 auto;text-align:center;background:var(--orange);color:#fff;border:3px solid var(--brown);
+  border-radius:10px;padding:3px 0;font-size:clamp(13px,2vw,16px);
+}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:8px;background:#E8D9BC;border:2px solid var(--brown);outline:none}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--green);
+  border:3px solid var(--brown);box-shadow:0 2px 0 var(--brown);cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--green);border:3px solid var(--brown);cursor:pointer}
+.seg{display:flex;gap:9px;margin-top:4px}
+.seg button{
+  flex:1;background:var(--cream2);border:3px solid var(--brown);border-radius:14px;box-shadow:0 4px 0 var(--brown);
+  padding:8px 4px;display:flex;flex-direction:column;gap:2px;align-items:center;transition:background .15s;
+}
+.seg button .big{font-size:clamp(14px,2.3vw,19px);color:var(--brown2)}
+.seg button .desc{font-size:clamp(10px,1.6vw,12px);color:#8D6E63;font-family:'Comic Sans MS','Lilita One',cursive;line-height:1.1}
+.seg button.sel{background:var(--orange)}
+.seg button.sel .big{color:#fff}.seg button.sel .desc{color:#FFE7D3}
+.swgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:4px}
+@media(max-width:480px){.swgrid{grid-template-columns:1fr}}
+.switch{
+  display:flex;align-items:center;gap:10px;background:#fff;border:3px solid #E8D9BC;border-radius:13px;
+  padding:8px 11px;cursor:pointer;transition:border-color .15s;
+}
+.switch .sw-txt{flex:1;font-size:clamp(12.5px,2vw,16px);color:var(--brown2);line-height:1.2}
+.switch input{display:none}
+.knob{
+  width:46px;height:25px;flex:0 0 auto;background:#CFD8DC;border:3px solid var(--brown);border-radius:20px;
+  position:relative;transition:background .18s;
+}
+.knob::after{
+  content:"";position:absolute;top:1px;left:2px;width:17px;height:17px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--brown);transition:left .18s;
+}
+.switch input:checked + .knob{background:var(--green)}
+.switch input:checked + .knob::after{left:21px}
+.switch.lock{background:var(--cream2);cursor:default;border-color:var(--brown)}
+.switch.lock .knob{background:var(--yellow);opacity:.95}
+.set-note{margin-top:12px;text-align:center;font-size:clamp(11px,1.8vw,13.5px);color:#8D6E63;font-family:'Comic Sans MS','Lilita One',cursive}
+
+/* ====== game ====== */
+.topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.topbar .spacer{flex:1}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;background:var(--cream2);border:3px solid var(--brown);
+  border-radius:14px;padding:5px 11px;font-size:clamp(14px,2.3vw,19px);color:var(--brown2);
+}
+.pill svg{width:18px;height:18px;fill:var(--orange2)}
+.pill.time svg{fill:var(--blue)} .pill.time.low{background:#FFEBEE;border-color:var(--red);color:var(--red);animation:blink .5s steps(2) infinite}
+.timerwrap{height:14px;background:#E8D9BC;border:3px solid var(--brown);border-radius:10px;margin:10px 0 12px;overflow:hidden}
+#timerFill{height:100%;width:100%;background:linear-gradient(90deg,#66BB6A,#9CCC65);border-radius:6px;transition:width .1s linear}
+#timerFill.mid{background:linear-gradient(90deg,#FFC61A,#FFD93B)}
+#timerFill.low{background:linear-gradient(90deg,#EF5350,#FF8A80)}
+.qcard{
+  background:#fff;border:3px solid var(--brown);border-radius:18px;padding:12px 14px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;min-height:150px;justify-content:center;
+}
+.qchip{
+  align-self:center;background:var(--blue);color:#fff;border:3px solid var(--brown);border-radius:20px;
+  padding:2px 13px;font-size:clamp(11px,1.9vw,14px);box-shadow:0 3px 0 var(--brown);
+}
+#qVisual{display:none} #qVisual.has{display:block}
+#qVisual svg{width:min(44vw,170px);height:auto;display:block}
+.qtext{font-size:clamp(23px,4.6vw,36px);text-align:center;color:var(--brown2);line-height:1.25;display:flex;flex-wrap:wrap;justify-content:center;align-items:center}
+.qhint{
+  display:none;background:#FFF6DF;border:2px dashed var(--orange2);border-radius:10px;color:var(--orange2);
+  padding:3px 10px;font-size:clamp(11px,1.8vw,13.5px);font-family:'Comic Sans MS','Lilita One',cursive;
+}
+.qhint.has{display:inline-block}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 .12em;transform:translateY(-.12em)}
+.fr .fr-t{padding:0 .28em .1em}
+.fr .fr-b{padding:.1em .28em 0;border-top:3px solid currentColor}
+.fr .blank{color:var(--orange2);min-width:1.4em;display:inline-block;text-align:center}
+.answers{margin-top:12px;min-height:236px}
+.mcgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;height:100%}
+.choice{
+  background:var(--cream2);border:4px solid var(--brown);border-radius:16px;box-shadow:0 5px 0 var(--brown);
+  min-height:78px;font-size:clamp(21px,3.6vw,30px);color:var(--brown2);
+  display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 10px;
+  transition:transform .06s,box-shadow .06s,background .15s;position:relative;
+}
+.choice:hover{transform:translateY(-2px)}
+.choice:active{transform:translateY(4px);box-shadow:0 1px 0 var(--brown)}
+.choice .badge{
+  position:absolute;top:-11px;left:-11px;width:30px;height:30px;border-radius:50%;
+  background:var(--blue);border:3px solid var(--brown);color:#fff;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+.choice.pick{background:var(--yellow)}
+.choice.good{background:var(--green);color:#fff}
+.choice.bad{background:var(--red);color:#fff}
+/* isian */
+.inputzone{display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;justify-content:center}
+.preview{
+  min-width:min(66vw,300px);min-height:74px;background:#fff;border:4px solid var(--brown);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;font-size:clamp(26px,5vw,40px);color:var(--brown2);
+  box-shadow:inset 0 3px 0 rgba(93,64,55,.12);padding:4px 16px;
+}
+.preview .ph{color:#D7CCC8}
+.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;width:min(88vw,340px)}
+.padkey{
+  height:clamp(50px,8vw,62px);background:var(--cream2);border:3px solid var(--brown);border-radius:14px;
+  box-shadow:0 4px 0 var(--brown);font-size:clamp(19px,3.2vw,26px);color:var(--brown2);
+  display:flex;align-items:center;justify-content:center;transition:transform .05s,box-shadow .05s;
+}
+.padkey:active{transform:translateY(3px);box-shadow:0 1px 0 var(--brown)}
+.padkey.alt{background:#FFE3C2}
+.padkey.ok{grid-column:span 2;background:var(--green);color:#fff;font-size:clamp(20px,3.4vw,27px)}
+.padkey svg{width:26px;height:26px;fill:var(--brown)}
+.padkey.shake, .preview.shake{animation:shake .4s}
+
+/* ====== overlay umpan balik ====== */
+#fbOverlay{
+  position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;flex-direction:column;
+  background:rgba(62,39,35,.55);backdrop-filter:blur(2px);cursor:pointer;
+}
+#fbOverlay.show{display:flex}
+.stamp{
+  font-size:clamp(52px,13vw,104px);color:#fff;transform:rotate(-5deg);
+  text-shadow:0 4px 0 var(--brown),0 -3px 0 var(--brown),3px 0 0 var(--brown),-3px 0 0 var(--brown),0 10px 0 rgba(0,0,0,.25);
+  animation:stampin .38s cubic-bezier(.2,1.6,.4,1);text-align:center;line-height:1;
+}
+.stamp.good{color:#B9F6CA}.stamp.badw{color:#FF8A80}
+.fb-sub{
+  margin-top:16px;background:var(--cream);border:4px solid var(--brown);border-radius:16px;
+  padding:10px 22px;font-size:clamp(20px,4vw,32px);color:var(--brown2);text-align:center;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;animation:fadeup .3s .1s both;
+}
+.fb-sub .plus{color:var(--green2)}
+.fb-hint{margin-top:12px;color:#FFF3D9;font-size:clamp(12px,2vw,15px);font-family:'Comic Sans MS','Lilita One',cursive;opacity:.9}
+.fb-face{width:min(30vw,110px);animation:pop .4s .05s both}
+
+/* ====== hasil ====== */
+.res-head{display:flex;flex-direction:column;align-items:center;gap:6px}
+.res-title{font-size:clamp(26px,5.4vw,42px);color:var(--orange2);text-align:center;text-shadow:0 2px 0 #fff}
+.stars{display:flex;gap:8px;margin:4px 0}
+.stars svg{width:clamp(54px,11vw,86px);height:auto;opacity:.9}
+.stars .st-off{fill:#E0D5C0;stroke:var(--brown);stroke-width:1.6}
+.stars .st-on{fill:var(--yellow);stroke:var(--brown);stroke-width:1.6;animation:starpop .5s cubic-bezier(.2,1.8,.4,1) both;filter:drop-shadow(0 3px 0 rgba(93,64,55,.35))}
+.res-score{
+  background:var(--cream2);border:4px solid var(--brown);border-radius:18px;padding:8px 26px;
+  font-size:clamp(30px,6.5vw,50px);color:var(--brown);display:flex;align-items:center;gap:10px;box-shadow:0 5px 0 var(--shadow);
+}
+.res-score svg{width:.9em;height:.9em;fill:var(--orange2)}
+.statrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.stat{
+  background:#fff;border:3px solid var(--brown);border-radius:14px;padding:7px 15px;text-align:center;
+  font-size:clamp(13px,2.2vw,17px);display:flex;flex-direction:column;gap:1px;min-width:92px;
+}
+.stat .n{font-size:clamp(19px,3.4vw,27px)}
+.stat.ok .n{color:var(--green2)} .stat.no .n{color:var(--red)} .stat.to .n{color:var(--blue)}
+.tips{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.tip{
+  background:#FFF6DF;border:3px solid var(--brown);border-radius:12px;padding:8px 12px;
+  font-size:clamp(12.5px,2vw,15.5px);display:flex;align-items:center;gap:8px;color:var(--brown2);
+}
+.tip svg{width:19px;height:19px;fill:var(--orange2);flex:0 0 auto}
+
+/* ====== modal, toast, confetti ====== */
+#modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:rgba(62,39,35,.5)}
+#modal.show{display:flex}
+.modal-card{
+  background:var(--cream);border:4px solid var(--brown);border-radius:20px;padding:20px 22px;
+  width:min(90vw,360px);text-align:center;animation:pop .28s cubic-bezier(.2,1.5,.4,1);box-shadow:0 8px 0 var(--shadow);
+}
+.modal-card p{font-size:clamp(16px,3vw,21px);color:var(--brown2);margin:0 0 15px;line-height:1.35}
+.modal-card .btn-row{margin-top:0}
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);z-index:95;
+  background:var(--brown);color:#FFF3D9;border-radius:14px;padding:9px 18px;font-size:clamp(13px,2.2vw,16px);
+  border:3px solid #fff;box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .3s cubic-bezier(.2,1.4,.4,1);
+  max-width:88vw;text-align:center;
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:85;overflow:hidden}
+.confetti{position:absolute;top:-24px;animation:fall linear both}
+@keyframes fall{to{transform:translateY(112vh) rotate(660deg)}}
+.scorepop{
+  position:fixed;left:50%;top:38%;transform:translateX(-50%);z-index:86;pointer-events:none;
+  font-size:clamp(30px,6vw,48px);color:#B9F6CA;
+  text-shadow:0 3px 0 var(--brown),3px 0 0 var(--brown),-3px 0 0 var(--brown),0 -3px 0 var(--brown);
+  animation:riseup .9s ease-out both;
+}
+
+/* ====== animasi SVG latar ====== */
+.cloud{animation:drift var(--d,70s) linear infinite;animation-delay:var(--dl,0s)}
+.fly{animation:flyx var(--d,30s) linear infinite;animation-delay:var(--dl,0s)}
+.flap{transform-box:fill-box;transform-origin:center;animation:flap .42s ease-in-out infinite;animation-delay:var(--fl,0s)}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 4.5s ease-in-out infinite alternate;animation-delay:var(--sd,0s)}
+
+@keyframes drift{from{transform:translateX(-380px)}to{transform:translateX(1980px)}}
+@keyframes flyx{from{transform:translateX(-120px)}to{transform:translateX(1760px)}}
+@keyframes flap{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.5)}}
+@keyframes sway{from{transform:rotate(-1.7deg)}to{transform:rotate(1.7deg)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes stampin{0%{transform:scale(2.4) rotate(6deg);opacity:0}100%{transform:scale(1) rotate(-5deg);opacity:1}}
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes riseup{0%{opacity:0;transform:translate(-50%,30px) scale(.7)}25%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
+@keyframes starpop{0%{transform:scale(.2) rotate(-30deg);opacity:0}70%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes blink{50%{opacity:.55}}
+
+@media(max-width:520px){
+  .panel{padding:14px 12px 16px;border-radius:20px}
+  .mcgrid{gap:8px}
+  .choice{min-height:66px}
+  #sysBtns{top:8px;right:8px}
+  .iconbtn{width:40px;height:40px}
+  .slider-row .sl-label{width:92px;font-size:11px}
+  .answers{min-height:224px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LATAR: pemandangan bukit, gunung, awan, burung, matahari, pohon pinus ============ -->
+<svg id="bg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5FC0FF"/>
+      <stop offset=".55" stop-color="#9ADCFF"/>
+      <stop offset="1" stop-color="#D6F4FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#skyG)"/>
+
+  <!-- matahari cerah -->
+  <g transform="translate(1340,150)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="48s" repeatCount="indefinite"/>
+      <g fill="#FFC61A">
+        <path d="M0 -150 L-16 -100 L16 -100 Z"/><path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(30)"/>
+        <path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(60)"/><path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(90)"/>
+        <path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(120)"/><path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(150)"/>
+        <path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(180)"/><path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(210)"/>
+        <path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(240)"/><path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(270)"/>
+        <path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(300)"/><path d="M0 -150 L-16 -100 L16 -100 Z" transform="rotate(330)"/>
+      </g>
+    </g>
+    <circle r="78" fill="#FFD93B" stroke="#F2B705" stroke-width="9"/>
+    <circle cx="-24" cy="-14" r="7" fill="#F2B705" opacity=".85"/>
+    <circle cx="20" cy="-18" r="7" fill="#F2B705" opacity=".85"/>
+    <path d="M-28 10 Q0 34 28 10" stroke="#F2B705" stroke-width="7" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- awan -->
+  <g class="cloud" style="--d:80s;--dl:-12s" opacity=".95">
+    <g transform="translate(0,105)" fill="#FFFFFF">
+      <ellipse cx="0" cy="0" rx="86" ry="34"/><ellipse cx="-52" cy="12" rx="52" ry="26"/><ellipse cx="58" cy="10" rx="58" ry="28"/>
+    </g>
+  </g>
+  <g class="cloud" style="--d:64s;--dl:-40s" opacity=".9">
+    <g transform="translate(0,225) scale(.72)" fill="#FFFFFF">
+      <ellipse cx="0" cy="0" rx="86" ry="34"/><ellipse cx="-52" cy="12" rx="52" ry="26"/><ellipse cx="58" cy="10" rx="58" ry="28"/>
+    </g>
+  </g>
+  <g class="cloud" style="--d:96s;--dl:-70s" opacity=".85">
+    <g transform="translate(0,320) scale(.55)" fill="#FFFFFF">
+      <ellipse cx="0" cy="0" rx="86" ry="34"/><ellipse cx="-52" cy="12" rx="52" ry="26"/><ellipse cx="58" cy="10" rx="58" ry="28"/>
+    </g>
+  </g>
+  <g class="cloud" style="--d:52s;--dl:-24s" opacity=".92">
+    <g transform="translate(0,60) scale(.85)" fill="#FFFFFF">
+      <ellipse cx="0" cy="0" rx="86" ry="34"/><ellipse cx="-52" cy="12" rx="52" ry="26"/><ellipse cx="58" cy="10" rx="58" ry="28"/>
+    </g>
+  </g>
+
+  <!-- burung berterbangan -->
+  <g class="fly" style="--d:32s;--dl:-6s">
+    <g transform="translate(0,180)">
+      <path class="flap" d="M-15 0 Q -7 -11 0 0 Q 7 -11 15 0" stroke="#445A6B" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g class="fly" style="--d:44s;--dl:-20s">
+    <g transform="translate(0,255) scale(.75)">
+      <path class="flap" style="--fl:.15s" d="M-15 0 Q -7 -11 0 0 Q 7 -11 15 0" stroke="#445A6B" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g class="fly" style="--d:56s;--dl:-38s">
+    <g transform="translate(0,130) scale(.6)">
+      <path class="flap" style="--fl:.3s" d="M-15 0 Q -7 -11 0 0 Q 7 -11 15 0" stroke="#445A6B" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- gunung-gunung -->
+  <path d="M0 585 L170 395 L305 505 L470 340 L655 545 L830 370 L985 540 L1130 415 L1300 555 L1460 430 L1600 585 Z" fill="#A7BDD8"/>
+  <path d="M470 340 L440 375 L470 392 L500 372 Z" fill="#FFFFFF"/>
+  <path d="M830 370 L800 405 L830 425 L862 402 Z" fill="#FFFFFF"/>
+  <path d="M170 395 L142 428 L170 448 L200 426 Z" fill="#FFFFFF"/>
+  <path d="M1460 430 L1433 462 L1460 481 L1489 460 Z" fill="#FFFFFF"/>
+  <path d="M0 660 L215 480 L415 625 L605 465 L805 645 L1005 490 L1210 655 L1405 505 L1600 660 Z" fill="#7E9CC4"/>
+
+  <!-- bukit-bukit hijau -->
+  <ellipse cx="290" cy="915" rx="790" ry="330" fill="#8FD46F"/>
+  <ellipse cx="1130" cy="935" rx="830" ry="350" fill="#7CCB5F"/>
+  <ellipse cx="480" cy="1030" rx="940" ry="430" fill="#5CB85C"/>
+  <ellipse cx="1330" cy="1050" rx="930" ry="440" fill="#4CA33B"/>
+
+  <!-- pohon pinus -->
+  <g transform="translate(130,795) scale(1.05)"><g class="sway" style="--sd:-1s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#2F7D3B"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#256B31"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#2F7D3B"/>
+  </g></g>
+  <g transform="translate(240,818) scale(1.3)"><g class="sway" style="--sd:-2.4s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#35894B"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#2B7A3F"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#35894B"/>
+  </g></g>
+  <g transform="translate(352,830) scale(.8)"><g class="sway" style="--sd:-.6s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#256B31"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#2F7D3B"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#256B31"/>
+  </g></g>
+  <g transform="translate(700,852) scale(.65)"><g class="sway" style="--sd:-3.1s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#2F7D3B"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#256B31"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#2F7D3B"/>
+  </g></g>
+  <g transform="translate(1245,840) scale(1.15)"><g class="sway" style="--sd:-1.8s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#35894B"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#2B7A3F"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#35894B"/>
+  </g></g>
+  <g transform="translate(1380,820) scale(.85)"><g class="sway" style="--sd:-2.8s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#256B31"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#2F7D3B"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#256B31"/>
+  </g></g>
+  <g transform="translate(1505,845) scale(1.2)"><g class="sway" style="--sd:-.2s">
+    <rect x="-9" y="-24" width="18" height="36" rx="4" fill="#7A5230"/>
+    <path d="M0 -148 L36 -66 L-36 -66 Z" fill="#2F7D3B"/><path d="M0 -116 L44 -22 L-44 -22 Z" fill="#256B31"/><path d="M0 -84 L52 20 L-52 20 Z" fill="#2F7D3B"/>
+  </g></g>
+
+  <!-- bunga-bunga kecil -->
+  <g>
+    <g transform="translate(520,880)"><circle r="8" fill="#FF7BAC"/><circle r="4" fill="#FFE066"/></g>
+    <g transform="translate(600,900) scale(.8)"><circle r="8" fill="#B388FF"/><circle r="4" fill="#FFE066"/></g>
+    <g transform="translate(1010,905)"><circle r="8" fill="#FF7BAC"/><circle r="4" fill="#FFE066"/></g>
+    <g transform="translate(1120,890) scale(.75)"><circle r="8" fill="#FFB74D"/><circle r="4" fill="#FFF3D9"/></g>
+    <g transform="translate(80,905) scale(.9)"><circle r="8" fill="#FF7BAC"/><circle r="4" fill="#FFE066"/></g>
+  </g>
+</svg>
+
+<!-- ============ tombol sistem: musik, sfx, fullscreen ============ -->
+<div id="sysBtns">
+  <button class="iconbtn" id="btnMusic" title="Musik">
+    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    <svg class="slash" viewBox="0 0 24 24"><path class="slashic" d="M4 4 L20 20" stroke="#EF5350" stroke-width="3.4" stroke-linecap="round" fill="none"/></svg>
+  </button>
+  <button class="iconbtn" id="btnSfx" title="Efek Suara">
+    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/><path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <svg class="slash" viewBox="0 0 24 24"><path class="slashic" d="M4 4 L20 20" stroke="#EF5350" stroke-width="3.4" stroke-linecap="round" fill="none"/></svg>
+  </button>
+  <button class="iconbtn" id="btnFs" title="Layar Penuh">
+    <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+  </button>
+</div>
+
+<div id="app">
+
+  <!-- ============ BERANDA ============ -->
+  <section id="scr-home" class="screen active">
+    <div class="panel">
+      <div class="home-head">
+        <svg id="homeTitle" viewBox="0 0 640 190">
+          <text x="320" y="76" text-anchor="middle" font-family="'Lilita One',cursive" font-size="74" fill="#FFD93B" stroke="#5D4037" stroke-width="10" paint-order="stroke" transform="rotate(-2 320 60)">PECAHAN</text>
+          <text x="320" y="158" text-anchor="middle" font-family="'Lilita One',cursive" font-size="66" fill="#FFFFFF" stroke="#5D4037" stroke-width="10" paint-order="stroke" transform="rotate(1.5 320 140)">CERDAS CERMAT!</text>
+        </svg>
+        <div id="logoWrap">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="90" fill="#FFD93B" stroke="#5D4037" stroke-width="7"/>
+            <circle cx="100" cy="100" r="74" fill="#FFF9EC" stroke="#5D4037" stroke-width="4" stroke-dasharray="9 7"/>
+            <path d="M56 106 Q40 98 34 84" stroke="#5D4037" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <circle cx="33" cy="80" r="7.5" fill="#FFC9A3" stroke="#5D4037" stroke-width="4"/>
+            <path d="M144 106 Q160 100 167 86" stroke="#5D4037" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <circle cx="168" cy="82" r="7.5" fill="#FFC9A3" stroke="#5D4037" stroke-width="4"/>
+            <path d="M72 148 L64 160 M128 148 L136 160" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="100" cy="112" r="44" fill="#FF8A3D" stroke="#5D4037" stroke-width="5"/>
+            <path d="M100 112 L100 68 A44 44 0 0 1 144 112 Z" fill="#FFC61A" stroke="#5D4037" stroke-width="4"/>
+            <circle cx="87" cy="106" r="5" fill="#5D4037"/><circle cx="115" cy="106" r="5" fill="#5D4037"/>
+            <path d="M84 124 Q101 138 118 124" stroke="#5D4037" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <circle cx="78" cy="120" r="6" fill="#FFB59B" opacity=".85"/><circle cx="124" cy="120" r="6" fill="#FFB59B" opacity=".85"/>
+            <g transform="rotate(-9 100 56)">
+              <rect x="72" y="46" width="56" height="15" rx="5" fill="#4CAF50" stroke="#5D4037" stroke-width="4"/>
+              <path d="M100 30 L134 46 L100 62 L66 46 Z" fill="#66BB6A" stroke="#5D4037" stroke-width="4"/>
+            </g>
+            <path d="M133 52 L142 74" stroke="#F2B705" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="143" cy="79" r="6" fill="#FFD93B" stroke="#5D4037" stroke-width="3.5"/>
+            <path d="M28 136 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 Z" fill="#FF7BAC"/>
+            <path d="M172 118 l3.4 7.6 7.6 3.4 -7.6 3.4 -3.4 7.6 -3.4 -7.6 -7.6 -3.4 7.6 -3.4 Z" fill="#42A5F5"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+        WAKTU HITUNG MUNDUR PER SOAL
+      </div>
+      <div class="optgrid" id="timeOpts"></div>
+
+      <div class="section-label">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        JUMLAH SOAL
+      </div>
+      <div class="optgrid" id="countOpts"></div>
+
+      <div class="home-foot">
+        <button class="btn btn-start" id="btnStart">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          MULAI MAIN!
+        </button>
+        <div class="btn-row">
+          <button class="btn blue" id="btnSettings">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.49.49 0 0 0 14 1h-4a.49.49 0 0 0-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46c.14.24.42.34.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.24.42.49.42h4c.25 0 .45-.18.49-.42l.38-2.65a7.3 7.3 0 0 0 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+            PENGATURAN
+          </button>
+          <button class="btn orange" id="btnHelp">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M4 11h12.17l-5.59-5.59L12 4l8 8-8 8-1.41-1.41L16.17 13H4z"/></svg>
+            PETUNJUK
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PETUNJUK ============ -->
+  <section id="scr-help" class="screen">
+    <div class="panel wide">
+      <div class="help-top">
+        <button class="btn backbtn" id="btnHelpBack">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M20 13H7.83l5.59 5.59L12 20l-8-8 8-8 1.41 1.41L7.83 11H20z"/></svg>
+          KEMBALI
+        </button>
+        <div class="spacer" style="flex:1"></div>
+      </div>
+      <div class="help-bubble">
+        <svg class="mascot" viewBox="0 0 200 200">
+          <path d="M30 96 Q12 84 8 68" stroke="#5D4037" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <circle cx="8" cy="63" r="8" fill="#FFC9A3" stroke="#5D4037" stroke-width="4.5"/>
+          <circle cx="100" cy="116" r="50" fill="#FF8A3D" stroke="#5D4037" stroke-width="6"/>
+          <path d="M100 116 L100 66 A50 50 0 0 1 150 116 Z" fill="#FFC61A" stroke="#5D4037" stroke-width="5"/>
+          <circle cx="85" cy="110" r="6" fill="#5D4037"/><circle cx="117" cy="110" r="6" fill="#5D4037"/>
+          <path d="M82 130 Q100 146 120 130" stroke="#5D4037" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <circle cx="74" cy="125" r="7" fill="#FFB59B" opacity=".85"/><circle cx="128" cy="125" r="7" fill="#FFB59B" opacity=".85"/>
+          <g transform="rotate(-9 100 58)">
+            <rect x="70" y="48" width="60" height="16" rx="5" fill="#4CAF50" stroke="#5D4037" stroke-width="4.5"/>
+            <path d="M100 30 L138 48 L100 66 L62 48 Z" fill="#66BB6A" stroke="#5D4037" stroke-width="4.5"/>
+          </g>
+          <path d="M138 55 L148 80" stroke="#F2B705" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="149" cy="86" r="7" fill="#FFD93B" stroke="#5D4037" stroke-width="4"/>
+          <path d="M170 100 Q186 88 192 72" stroke="#5D4037" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <circle cx="192" cy="67" r="8" fill="#FFC9A3" stroke="#5D4037" stroke-width="4.5"/>
+        </svg>
+        <div class="bubble-txt">Adek, sebelum main, mampir kesini dulu ya!</div>
+      </div>
+      <div class="help-list">
+        <div class="help-item">
+          <div class="hico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg></div>
+          <div>Di beranda, pilih <b>waktu hitung mundur</b> untuk tiap soal dan <b>jumlah soal</b> yang mau dikerjakan. Lalu tekan <b>MULAI MAIN!</b></div>
+        </div>
+        <div class="help-item">
+          <div class="hico"><svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div>Soal <b>PILIHAN GANDA</b>: ada 4 jawaban. Klik langsung jawaban yang menurutmu paling benar ya!</div>
+        </div>
+        <div class="help-item">
+          <div class="hico"><svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg></div>
+          <div>Soal <b>ISIAN</b>: ketik jawabanmu pakai <b>papan angka</b> yang muncul, lalu tekan tombol <b>OK</b>.</div>
+        </div>
+        <div class="help-item">
+          <div class="hico"><svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v16h18V5a2 2 0 0 0-2-2zm-7 16h-2v-2h2v2zm0-4h-2V9h2v6z" opacity="0"/><path d="M12 2l-8 4v12h16V6l-8-4zm0 2.2L18.5 7.5 12 10.8 5.5 7.5 12 4.2zM6 9.9l5 2.5V18H6V9.9zm7 8.1v-5.6l5-2.5V18h-5z" opacity="0"/><path d="M5 13.5h3v2H5zM11 9h3v2h-3zM11 13.5h3v2h-3zM17 9h2v2h-2zM17 13.5h2v2h-2z" opacity="0"/><path d="M9.5 3 4 6v13h16V6L9.5 3z" opacity="0"/><path d="M12 3 3 8v13h18V8L12 3zm0 2.3L18.6 9 12 12.4 5.4 9 12 5.3zM7 14h10v2H7v-2z" opacity="0"/><path d="M19 13.5h-2.5V11H19v2.5zm0-4h-2.5V7H19v2.5zm-5 4h-2.5V11H14v2.5zm0-4h-2.5V7H14v2.5zm-5 4H6.5V11H9v2.5zm0-4H6.5V7H9v2.5z" opacity="0"/><path d="M4 4h16v16H4z" opacity="0"/><path d="M6 6h12v12H6z" opacity="0"/><path d="M12 3 2 9v13h20V9L12 3zm0 2.4L19.7 9.9 12 13.8 4.3 9.9 12 5.4zM8 15h8v2H8v-2z" opacity="0"/><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" opacity="0"/><path d="M3 5h18v14H3z" opacity="0"/><path d="M7 7h10v3H7zM7 12h4v5H7zM13 12h4v5h-4z"/></svg></div>
+          <div>Menulis pecahan pakai <b>garis miring (/)</b>, contoh: <b>3/4</b>. Menulis desimal pakai <b>koma</b>, contoh: <b>0,5</b>.</div>
+        </div>
+        <div class="help-item">
+          <div class="hico"><svg viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+          <div>Jawaban pecahan ditulis <b>paling sederhana</b>, contoh: 2/4 cukup ditulis <b>1/2</b>. Tapi tenang, 2/4 juga tetap dianggap benar kok!</div>
+        </div>
+        <div class="help-item">
+          <div class="hico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg></div>
+          <div>Jawab sebelum <b>waktu habis</b>! Makin cepat menjawab, makin besar <b>bonus skornya</b>. Kumpulkan bintang 3 ya!</div>
+        </div>
+      </div>
+      <div class="tipchip">
+        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+        Guru bisa mengubah soal pilihan ganda, soal isian, dan topik apa saja lewat tombol <b>&nbsp;PENGATURAN&nbsp;</b> di beranda.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PENGATURAN ============ -->
+  <section id="scr-settings" class="screen">
+    <div class="panel wide">
+      <div class="help-top">
+        <button class="btn backbtn" id="btnSetBack">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M20 13H7.83l5.59 5.59L12 20l-8-8 8-8 1.41 1.41L7.83 11H20z"/></svg>
+          KEMBALI
+        </button>
+        <div class="spacer" style="flex:1"></div>
+      </div>
+
+      <div class="set-card">
+        <div class="set-title">
+          <svg viewBox="0 0 24 24"><path d="M3 5h18v14H3z" opacity="0"/><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          CAMPURAN SOAL
+        </div>
+        <div class="set-hint">Atur persentase soal pilihan ganda dan soal isian. Totalnya selalu 100% ya!</div>
+        <div class="slider-row">
+          <div class="sl-label">Pilihan Ganda</div>
+          <input type="range" id="pgRange" min="0" max="100" step="5" value="60">
+          <div class="sl-val" id="pgVal">60%</div>
+        </div>
+        <div class="slider-row">
+          <div class="sl-label">Isian (Angka)</div>
+          <input type="range" id="isianRange" min="0" max="100" step="5" value="40">
+          <div class="sl-val" id="isianVal">40%</div>
+        </div>
+      </div>
+
+      <div class="set-card">
+        <div class="set-title">
+          <svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.8 5.3.8-3.85 3.75.9 5.3L12 14.2l-4.75 2.45.9-5.3L4.3 7.6l5.3-.8L12 2z"/></svg>
+          INTENSITAS KEACAKAN ANGKA
+        </div>
+        <div class="set-hint">Makin tinggi, makin liar angka-angka di soalnya. Hihihi!</div>
+        <div class="seg" id="randSeg">
+          <button data-lvl="1"><span class="big">TENANG</span><span class="desc">Angka kecil, ramah</span></button>
+          <button data-lvl="2" class="sel"><span class="big">SERU</span><span class="desc">Angka sedang, mantap</span></button>
+          <button data-lvl="3"><span class="big">KACAU!</span><span class="desc">Angka besar, siap-siap</span></button>
+        </div>
+      </div>
+
+      <div class="set-card">
+        <div class="set-title">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          MATERI YANG MUNCUL DI SOAL
+        </div>
+        <div class="set-hint">Nyalakan materi yang mau dilatih. Minimal satu harus aktif ya!</div>
+        <div class="swgrid">
+          <label class="switch lock">
+            <span class="sw-txt">Mengenal Pecahan <span style="font-size:.8em;color:#A1887F">(selalu aktif)</span></span>
+            <input type="checkbox" checked disabled>
+            <span class="knob"></span>
+          </label>
+          <label class="switch"><span class="sw-txt">Pecahan Senilai</span><input type="checkbox" id="sw-senilai" checked><span class="knob"></span></label>
+          <label class="switch"><span class="sw-txt">Penjumlahan Pecahan</span><input type="checkbox" id="sw-tambah" checked><span class="knob"></span></label>
+          <label class="switch"><span class="sw-txt">Pengurangan Pecahan</span><input type="checkbox" id="sw-kurang" checked><span class="knob"></span></label>
+          <label class="switch"><span class="sw-txt">Perkalian Pecahan</span><input type="checkbox" id="sw-kali" checked><span class="knob"></span></label>
+          <label class="switch"><span class="sw-txt">Pembagian Pecahan</span><input type="checkbox" id="sw-bagi" checked><span class="knob"></span></label>
+          <label class="switch"><span class="sw-txt">Pecahan ke Desimal</span><input type="checkbox" id="sw-desimal" checked><span class="knob"></span></label>
+          <label class="switch"><span class="sw-txt">Pecahan ke Persen</span><input type="checkbox" id="sw-persen" checked><span class="knob"></span></label>
+        </div>
+      </div>
+      <div class="set-note">Pengaturan otomatis tersimpan di perangkat ini</div>
+    </div>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section id="scr-game" class="screen">
+    <div class="panel game">
+      <div class="topbar">
+        <button class="iconbtn" id="btnQuit" title="Keluar">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+        <div class="pill" id="pillQ">Soal 1/10</div>
+        <div class="spacer"></div>
+        <div class="pill" id="pillScore">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span id="scoreTxt">0</span>
+        </div>
+        <div class="pill time" id="pillTime">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+          <span id="timeTxt">0:30</span>
+        </div>
+      </div>
+      <div class="timerwrap"><div id="timerFill"></div></div>
+      <div class="qcard">
+        <div class="qchip" id="qChip">Mengenal Pecahan</div>
+        <div id="qVisual"></div>
+        <div class="qtext" id="qText"></div>
+        <div class="qhint" id="qHint"></div>
+      </div>
+      <div class="answers" id="answers"></div>
+    </div>
+  </section>
+
+  <!-- ============ HASIL ============ -->
+  <section id="scr-result" class="screen">
+    <div class="panel">
+      <div class="res-head">
+        <div class="res-title" id="resTitle">HEBAT SEKALI!</div>
+        <div class="stars" id="starsBox"></div>
+        <div class="res-score">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span id="resScoreTxt">0</span>
+        </div>
+        <div class="statrow">
+          <div class="stat ok"><span class="n" id="stOk">0</span><span>Benar</span></div>
+          <div class="stat no"><span class="n" id="stNo">0</span><span>Salah</span></div>
+          <div class="stat to"><span class="n" id="stTo">0</span><span>Waktu Habis</span></div>
+        </div>
+        <div class="tips" id="resTips"></div>
+        <div class="btn-row" style="width:100%">
+          <button class="btn green" id="btnAgain">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-3.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            MAIN LAGI
+          </button>
+          <button class="btn blue" id="btnHome">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            BERANDA
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- overlay umpan balik -->
+<div id="fbOverlay">
+  <div id="fbFaceWrap"></div>
+  <div class="stamp" id="fbStamp">BENAR!</div>
+  <div class="fb-sub" id="fbSub"></div>
+  <div class="fb-hint">ketuk di mana saja untuk lanjut</div>
+</div>
+
+<!-- modal keluar -->
+<div id="modal">
+  <div class="modal-card">
+    <p id="modalText">Yakin mau keluar? Skormu nanti hilang lho!</p>
+    <div class="btn-row">
+      <button class="btn red" id="modalYes">YA, KELUAR</button>
+      <button class="btn green" id="modalNo">LANJUT MAIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="fx"></div>
+<script>
+/* =====================================================
+   MESIN AUDIO — Web Audio API
+   Musik petualangan: Melody + Synth + Bass + Drums
+   + efek suara lucu
+===================================================== */
+const AU = {ctx:null, master:null, mgain:null, sgain:null, leadBus:null, delay:null, noiseBuf:null,
+            timer:null, step:0, nextT:0, playing:false};
+const BPM = 132, STEPDUR = 60/BPM/4;
+
+const SEMI = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function n2f(n){
+  const m = /^([A-G])(#?)(\d)$/.exec(n);
+  const st = SEMI[m[1]] + (m[2]?1:0);
+  return 440 * Math.pow(2, (12*(+m[3]+1)+st - 69)/12);
+}
+
+/* --- partitur 8 birama (loop) --- */
+const MELODY = [
+ 'E5','','G5','','C6','','G5','','E5','','G5','','A5','','G5','',
+ 'D5','','G5','','B5','','G5','','D5','','G5','','A5','','B5','',
+ 'C6','','A5','','E5','','A5','','C6','','A5','','B5','','C6','',
+ 'A5','','F5','','C5','','F5','','A5','','C6','','A5','','F5','',
+ 'E5','','G5','','C6','','G5','','A5','','G5','','E5','','D5','',
+ 'D5','','E5','','D5','','B4','','G4','','B4','','D5','','G5','',
+ 'F5','','A5','','C6','','A5','','F5','','A5','','G5','','A5','',
+ 'G5','','A5','','B5','','C6','','D6','','B5','','G5','','',''
+];
+const CHORDS = [
+ {pad:['C4','E4','G4'], bass:'C3'},
+ {pad:['B3','D4','G4'], bass:'G2'},
+ {pad:['A3','C4','E4'], bass:'A2'},
+ {pad:['A3','C4','F4'], bass:'F2'},
+ {pad:['C4','E4','G4'], bass:'C3'},
+ {pad:['B3','D4','G4'], bass:'G2'},
+ {pad:['A3','C4','F4'], bass:'F2'},
+ {pad:['B3','D4','G4'], bass:'G2'}
+];
+
+function ensureCtx(){
+  if(AU.ctx){ if(AU.ctx.state==='suspended') AU.ctx.resume(); return; }
+  const C = window.AudioContext || window.webkitAudioContext;
+  if(!C) return;
+  AU.ctx = new C();
+  const comp = AU.ctx.createDynamicsCompressor();
+  comp.threshold.value = -16; comp.knee.value = 22; comp.ratio.value = 6;
+  comp.connect(AU.ctx.destination);
+  AU.master = AU.ctx.createGain(); AU.master.gain.value = .9;
+  AU.master.connect(comp);
+  AU.mgain = AU.ctx.createGain(); AU.mgain.gain.value = S.musicOn ? .5 : 0;
+  AU.mgain.connect(AU.master);
+  AU.sgain = AU.ctx.createGain(); AU.sgain.gain.value = S.sfxOn ? 1 : 0;
+  AU.sgain.connect(AU.master);
+  // gema halus untuk melodi
+  AU.leadBus = AU.ctx.createGain(); AU.leadBus.gain.value = 1;
+  AU.leadBus.connect(AU.mgain);
+  AU.delay = AU.ctx.createDelay(1); AU.delay.delayTime.value = STEPDUR*3;
+  const fb = AU.ctx.createGain(); fb.gain.value = .22;
+  const wet = AU.ctx.createGain(); wet.gain.value = .15;
+  AU.leadBus.connect(AU.delay); AU.delay.connect(fb); fb.connect(AU.delay);
+  AU.delay.connect(wet); wet.connect(AU.mgain);
+  // buffer derau untuk drum
+  const len = AU.ctx.sampleRate;
+  AU.noiseBuf = AU.ctx.createBuffer(1, len, AU.ctx.sampleRate);
+  const d = AU.noiseBuf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
+  startMusic();
+}
+
+/* ---------------- instrumen musik ---------------- */
+function mkNoise(t, dur){
+  const src = AU.ctx.createBufferSource();
+  src.buffer = AU.noiseBuf; src.loop = true;
+  src.start(t); src.stop(t+dur+.05);
+  return src;
+}
+function drumKick(t){
+  const o = AU.ctx.createOscillator(), g = AU.ctx.createGain();
+  o.type='sine';
+  o.frequency.setValueAtTime(150,t);
+  o.frequency.exponentialRampToValueAtTime(46,t+.13);
+  g.gain.setValueAtTime(.85,t);
+  g.gain.exponentialRampToValueAtTime(.001,t+.18);
+  o.connect(g); g.connect(AU.mgain);
+  o.start(t); o.stop(t+.2);
+}
+function drumSnare(t,v){
+  const n = mkNoise(t,.18), f = AU.ctx.createBiquadFilter(), g = AU.ctx.createGain();
+  f.type='bandpass'; f.frequency.value=1900; f.Q.value=.8;
+  g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.001,t+.16);
+  n.connect(f); f.connect(g); g.connect(AU.mgain);
+  const o = AU.ctx.createOscillator(), g2 = AU.ctx.createGain();
+  o.type='triangle'; o.frequency.setValueAtTime(210,t);
+  o.frequency.exponentialRampToValueAtTime(150,t+.07);
+  g2.gain.setValueAtTime(v*.55,t); g2.gain.exponentialRampToValueAtTime(.001,t+.08);
+  o.connect(g2); g2.connect(AU.mgain); o.start(t); o.stop(t+.1);
+}
+function drumHat(t,open,v){
+  const n = mkNoise(t,open?.3:.06), f = AU.ctx.createBiquadFilter(), g = AU.ctx.createGain();
+  f.type='highpass'; f.frequency.value=6800;
+  g.gain.setValueAtTime(v,t);
+  g.gain.exponentialRampToValueAtTime(.001,t+(open?.24:.045));
+  n.connect(f); f.connect(g); g.connect(AU.mgain);
+}
+function bassNote(t,f){
+  const o = AU.ctx.createOscillator(), fl = AU.ctx.createBiquadFilter(), g = AU.ctx.createGain();
+  o.type='sawtooth'; o.frequency.setValueAtTime(f,t);
+  fl.type='lowpass'; fl.frequency.value=330;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.2,t+.008);
+  g.gain.setValueAtTime(.2,t+.11); g.gain.exponentialRampToValueAtTime(.001,t+.17);
+  o.connect(fl); fl.connect(g); g.connect(AU.mgain);
+  o.start(t); o.stop(t+.2);
+}
+function padChord(t,notes,dur){
+  const fl = AU.ctx.createBiquadFilter();
+  fl.type='lowpass'; fl.frequency.value=780; fl.connect(AU.mgain);
+  const g = AU.ctx.createGain();
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(.05,t+.3);
+  g.gain.setValueAtTime(.05,t+dur-.1);
+  g.gain.linearRampToValueAtTime(0,t+dur+.4);
+  g.connect(fl);
+  notes.forEach(nn=>{
+    [0,-7].forEach(cents=>{
+      const o = AU.ctx.createOscillator();
+      o.type='sawtooth'; o.frequency.value = n2f(nn);
+      o.detune.value = cents;
+      o.connect(g); o.start(t); o.stop(t+dur+.5);
+    });
+  });
+}
+function leadNote(t,f,d){
+  const fl = AU.ctx.createBiquadFilter();
+  fl.type='lowpass'; fl.frequency.value=2500; fl.connect(AU.leadBus);
+  [[0,.07],[6,.045]].forEach(([det,vv])=>{
+    const o = AU.ctx.createOscillator(), g = AU.ctx.createGain();
+    o.type='square'; o.frequency.value=f; o.detune.value=det;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(vv,t+.006);
+    g.gain.setValueAtTime(vv*.8,t+d*.7);
+    g.gain.exponentialRampToValueAtTime(.001,t+d+.04);
+    o.connect(g); g.connect(fl); o.start(t); o.stop(t+d+.06);
+  });
+}
+
+function scheduleStep(step, t){
+  const bar = Math.floor(step/16)%8, pos = step%16;
+  const ch = CHORDS[bar];
+  // drums
+  if(pos%4===0) drumKick(t);
+  if(bar===7 && pos>=12){ drumSnare(t,.32); }
+  else if(pos===4 || pos===12){ drumSnare(t,.5); }
+  if(pos%2===0){
+    const openHat = (pos===14 && (bar===3 || bar===7));
+    drumHat(t, openHat, pos%4===0?.14:.09);
+  }
+  // bass: 1/8 notes memantul oktaf
+  if(pos%2===0){
+    let f = n2f(ch.bass);
+    if(pos%4===2) f*=2;
+    if(pos===14) f = n2f(ch.bass)*Math.pow(2,7/12);
+    bassNote(t,f);
+  }
+  // synth pad per birama
+  if(pos===0) padChord(t, ch.pad, STEPDUR*16);
+  // melodi
+  const m = MELODY[step%128];
+  if(m) leadNote(t, n2f(m), STEPDUR*1.7);
+}
+function startMusic(){
+  if(!AU.ctx || AU.playing) return;
+  AU.playing = true; AU.step = 0;
+  AU.nextT = AU.ctx.currentTime + .08;
+  AU.timer = setInterval(()=>{
+    if(AU.nextT < AU.ctx.currentTime) AU.nextT = AU.ctx.currentTime + .05;
+    while(AU.nextT < AU.ctx.currentTime + .35){
+      scheduleStep(AU.step%128, AU.nextT);
+      AU.nextT += STEPDUR; AU.step++;
+    }
+  }, 45);
+}
+function setMusicOn(on){
+  S.musicOn = on; saveS();
+  $('#btnMusic').classList.toggle('off', !on);
+  if(!AU.ctx) return;
+  AU.mgain.gain.setTargetAtTime(on?.5:0, AU.ctx.currentTime, .05);
+  if(on) startMusic();
+}
+function setSfxOn(on){
+  S.sfxOn = on; saveS();
+  $('#btnSfx').classList.toggle('off', !on);
+  if(AU.ctx) AU.sgain.gain.setTargetAtTime(on?1:0, AU.ctx.currentTime, .03);
+}
+
+/* ---------------- efek suara ---------------- */
+function blip(f0,f1,dur,type,vol,when){
+  if(!AU.ctx) return;
+  const t = AU.ctx.currentTime + (when||0);
+  const o = AU.ctx.createOscillator(), g = AU.ctx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(f0,t);
+  if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+  g.gain.setValueAtTime(vol,t);
+  g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g); g.connect(AU.sgain);
+  o.start(t); o.stop(t+dur+.03);
+}
+const SFX = {
+  click(){ blip(520,760,.08,'square',.22); },
+  key(){ blip(900,650,.055,'triangle',.2); },
+  swoosh(){
+    if(!AU.ctx) return;
+    const t = AU.ctx.currentTime;
+    const n = mkNoise(t,.3), f = AU.ctx.createBiquadFilter(), g = AU.ctx.createGain();
+    f.type='bandpass'; f.Q.value=1.2;
+    f.frequency.setValueAtTime(400,t);
+    f.frequency.exponentialRampToValueAtTime(2600,t+.22);
+    g.gain.setValueAtTime(.16,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.26);
+    n.connect(f); f.connect(g); g.connect(AU.sgain);
+  },
+  correct(){
+    if(!AU.ctx) return;
+    [523.25,659.25,783.99,1046.5].forEach((f,i)=>blip(f,f,.13,'square',.2,i*.085));
+    blip(1318.5,1318.5,.25,'sine',.14,.36);
+    const t = AU.ctx.currentTime+.36;
+    const n = mkNoise(t,.4), f = AU.ctx.createBiquadFilter(), g = AU.ctx.createGain();
+    f.type='highpass'; f.frequency.value=6000;
+    g.gain.setValueAtTime(.1,t); g.gain.exponentialRampToValueAtTime(.001,t+.4);
+    n.connect(f); f.connect(g); g.connect(AU.sgain);
+  },
+  wrong(){
+    if(!AU.ctx) return;
+    blip(196,175,.22,'sawtooth',.24,0);
+    blip(165,120,.34,'sawtooth',.24,.22);
+    blip(98,80,.4,'triangle',.2,.22);
+  },
+  timeup(){
+    if(!AU.ctx) return;
+    blip(233,233,.13,'square',.24,0);
+    blip(233,233,.13,'square',.24,.18);
+    blip(233,110,.5,'square',.22,.36);
+  },
+  tick(){ blip(1300,1250,.035,'square',.14); },
+  pop(){ blip(320,980,.09,'sine',.28); },
+  ding(){ blip(1568,1568,.3,'sine',.2); },
+  boing(){
+    if(!AU.ctx) return;
+    const t = AU.ctx.currentTime;
+    const o = AU.ctx.createOscillator(), g = AU.ctx.createGain();
+    o.type='sine';
+    o.frequency.setValueAtTime(340,t);
+    o.frequency.exponentialRampToValueAtTime(110,t+.16);
+    o.frequency.exponentialRampToValueAtTime(240,t+.3);
+    g.gain.setValueAtTime(.28,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.36);
+    o.connect(g); g.connect(AU.sgain); o.start(t); o.stop(t+.4);
+  },
+  fanfare(){
+    if(!AU.ctx) return;
+    const G4=392,C5=523.25,E5=659.25,G5=783.99,C6=1046.5;
+    [G4,C5,E5,G5].forEach((f,i)=>{ blip(f,f,.16,'square',.22,i*.11); blip(f,f,.16,'sawtooth',.1,i*.11); });
+    [C5,E5,G5,C6].forEach(f=>{ blip(f,f,.7,'square',.14,.5); blip(f,f,.7,'sawtooth',.07,.5); });
+  }
+};
+</script>
+<script>
+/* =====================================================
+   MESIN SOAL — pecahan & desimal, 8 topik
+===================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const rint = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pickA = arr => arr[rint(0,arr.length-1)];
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){ const j=rint(0,i); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function gcd(a,b){ return b ? gcd(b, a%b) : a; }
+function sameVal(f1,f2){ return f1.n*f2.d === f2.n*f1.d; }
+function simplify(n,d){ const g = gcd(n,d)||1; return {n:n/g, d:d/g}; }
+function fmtDec(v){
+  let s = (Math.round(v*1000)/1000).toString();
+  if(s.indexOf('.')<0) s += '';
+  return s.replace('.', ',');
+}
+function fracHTML(n,d,blank){
+  const top = blank==='n' ? '<span class="blank">?</span>' : n;
+  const bot = blank==='d' ? '<span class="blank">?</span>' : d;
+  return '<span class="fr"><span class="fr-t">'+top+'</span><span class="fr-b">'+bot+'</span></span>';
+}
+function plainFrac(n,d){ return d===1 ? String(n) : n+'/'+d; }
+
+const TOPIC_LABEL = {
+  pecahan:'Mengenal Pecahan', senilai:'Pecahan Senilai', tambah:'Penjumlahan Pecahan',
+  kurang:'Pengurangan Pecahan', kali:'Perkalian Pecahan', bagi:'Pembagian Pecahan',
+  desimal:'Pecahan ke Desimal', persen:'Pecahan ke Persen'
+};
+
+/* --- rentang angka menurut intensitas keacakan --- */
+function dRange(){ return S.randLvl===1?[2,6] : S.randLvl===2?[2,10] : [2,16]; }
+function nRange(){ return S.randLvl===1?[1,4] : S.randLvl===2?[1,6] : [1,9]; }
+function decDens(){
+  return S.randLvl===1 ? [2,4,5,10] : S.randLvl===2 ? [2,4,5,8,10,20] : [2,4,5,8,10,20,25,50];
+}
+function pctDens(){
+  return S.randLvl===1 ? [2,4,5,10] : S.randLvl===2 ? [2,4,5,10,20,25] : [2,4,5,10,20,25,50,100];
+}
+function coprimePair(minD,maxD){
+  for(let i=0;i<40;i++){
+    const b = rint(minD,maxD), a = rint(1,b-1);
+    if(gcd(a,b)===1) return {a,b};
+  }
+  return {a:1,b:2};
+}
+
+/* --- visual SVG soal mengenal pecahan --- */
+function pieSVG(a,b){
+  const cx=110, cy=110, r=86; let w='';
+  for(let i=0;i<b;i++){
+    const a0=i*2*Math.PI/b - Math.PI/2, a1=(i+1)*2*Math.PI/b - Math.PI/2;
+    const x0=(cx+r*Math.cos(a0)).toFixed(1), y0=(cy+r*Math.sin(a0)).toFixed(1);
+    const x1=(cx+r*Math.cos(a1)).toFixed(1), y1=(cy+r*Math.sin(a1)).toFixed(1);
+    const lg = (a1-a0)>Math.PI ? 1 : 0;
+    w += '<path d="M'+cx+' '+cy+' L'+x0+' '+y0+' A'+r+' '+r+' 0 '+lg+' 1 '+x1+' '+y1+' Z" fill="'
+       + (i<a?'#FF8A3D':'#FFF6DF') + '" stroke="#5D4037" stroke-width="4" stroke-linejoin="round"/>';
+  }
+  return '<svg viewBox="0 0 220 220">'+w+'</svg>';
+}
+function barSVG(a,b){
+  const W=220,H=96,pad=6, cw=(W-pad*2)/b; let rc='';
+  for(let i=0;i<b;i++){
+    rc += '<rect x="'+(pad+i*cw+2).toFixed(1)+'" y="'+pad+'" width="'+(cw-4).toFixed(1)+'" height="'+(H-pad*2)
+       + '" rx="7" fill="'+(i<a?'#FF8A3D':'#FFF6DF')+'" stroke="#5D4037" stroke-width="3.5"/>';
+  }
+  return '<svg viewBox="0 0 220 96">'+rc+'</svg>';
+}
+
+/* --- pembangkit pengecoh --- */
+function fracDistractors(ans, need){
+  const out = [];
+  const pool = [
+    {n:ans.n+1,d:ans.d},{n:Math.max(1,ans.n-1),d:ans.d},{n:ans.n,d:ans.d+1},
+    {n:ans.n,d:Math.max(2,ans.d-1)},{n:ans.n+1,d:ans.d+1},{n:ans.d,d:ans.n},
+    {n:ans.n*2,d:ans.d*2+1},{n:Math.max(1,ans.n-1),d:ans.d+1},{n:ans.n+1,d:Math.max(2,ans.d-1)}
+  ];
+  shuffle(pool);
+  for(const f of pool){
+    if(out.length>=need) break;
+    if(f.d<1||f.n<1) continue;
+    if(sameVal(f,ans)) continue;
+    if(out.some(o=>sameVal(o,f))) continue;
+    out.push(f);
+  }
+  let guard=0;
+  while(out.length<need && guard++<300){
+    const f = {n:rint(1,14), d:rint(2,14)};
+    if(!sameVal(f,ans) && !out.some(o=>sameVal(o,f))) out.push(f);
+  }
+  return out;
+}
+function numDistractors(ans, need, dec){
+  const out = [];
+  const pool = dec
+    ? [ans+0.1,ans-0.1,ans+0.25,ans-0.25,ans*2,ans/2,ans+0.05,ans-0.05,ans+0.5,ans+1]
+    : [ans+1,ans-1,ans+2,ans-2,ans*2,Math.round(ans/2),ans+5,ans-5,ans+3,ans+10];
+  shuffle(pool);
+  for(const v of pool){
+    if(out.length>=need) break;
+    if(v===null||v===undefined||isNaN(v)) continue;
+    if(v<=0 && ans>0) continue;
+    if(Math.abs(v-ans)<1e-9) continue;
+    if(out.some(o=>Math.abs(o-ans)<1e-9)) continue;
+    if(out.some(o=>Math.abs(o-v)<1e-9)) continue;
+    out.push(dec?Math.round(v*1000)/1000:Math.round(v));
+  }
+  let guard=0;
+  while(out.length<need && guard++<100){
+    const v = ans + (dec?rint(1,9)/10:rint(1,10))*(Math.random()<.5?-1:1);
+    if(v>0 && Math.abs(v-ans)>1e-9 && !out.some(o=>Math.abs(o-v)<1e-9)) out.push(Math.round(v*1000)/1000);
+  }
+  return out;
+}
+
+/* --- generator per topik --- */
+function genPecahan(){
+  const [d0,d1] = dRange();
+  const b = rint(d0, d1), a = rint(1, b-1);
+  const ans = {n:a, d:b, value:a/b};
+  const parts = [{t:'tx', v:'Pecahan mana yang menunjukkan bagian oranye?'}];
+  const visual = Math.random()<.5 ? pieSVG(a,b) : barSVG(a,b);
+  const choices = [[{kind:'frac', n:a, d:b, value:a/b}], fracDistractors(ans,3).map(f=>({kind:'frac',n:f.n,d:f.d,value:f.n/f.d}))];
+  return {topic:'pecahan', parts, visual, ans, choices};
+}
+function genSenilai(){
+  const [d0,d1] = dRange();
+  const {a,b} = coprimePair(Math.max(2,d0), d1);
+  const k = rint(2,5);
+  const shape = pickA(['missN','missD','pickEq','pickEq']);
+  if(shape==='pickEq'){
+    const ans = {n:a*k, d:b*k, value:a/b};
+    const wrongs = [
+      {n:a*k+1,d:b*k},{n:a*k-1,d:b*k},{n:a*k,d:b*k+1},{n:a*k,d:b*k-1},{n:a+1,d:b+1},{n:a*k+2,d:b*k}
+    ].filter(f=>f.n>0&&f.d>0&&!sameVal(f,ans));
+    const uniq=[]; for(const f of wrongs){ if(!uniq.some(u=>sameVal(u,f))) uniq.push(f); }
+    const pick3 = shuffle(uniq).slice(0,3);
+    let guard=0; while(pick3.length<3 && guard++<200){ const f={n:rint(1,16),d:rint(2,16)}; if(!sameVal(f,ans)&&!pick3.some(u=>sameVal(u,f))) pick3.push(f); }
+    return {topic:'senilai',
+      parts:[{t:'fr',n:a,d:b},{t:'tx',v:' = ?'}],
+      ans,
+      choices:[[ {kind:'frac',n:a*k,d:b*k,value:a/b} ], pick3.map(f=>({kind:'frac',n:f.n,d:f.d,value:f.n/f.d}))]};
+  }
+  const blank = shape==='missN' ? 'n' : 'd';
+  const ansNum = shape==='missN' ? a*k : b*k;
+  const ans = {value:ansNum, n:ansNum, d:1};
+  return {topic:'senilai',
+    parts:[{t:'fr',n:a,d:b},{t:'tx',v:' = '},{t:'fr',n:shape==='missN'?'BLANK':a*k,d:shape==='missD'?'BLANK':b*k,blank}],
+    ans, blank, blankSide:blank,
+    choices:[]};
+}
+function genTambahKurang(isTambah){
+  const [d0,d1] = dRange();
+  let a1,a2,b,res;
+  let tries = 0;
+  do{
+    b = rint(Math.max(3,d0), d1);
+    if(isTambah){
+      a1 = rint(1, b-2); a2 = rint(1, b-1-a1); res = a1+a2;
+    }else{
+      a1 = rint(2, b-1); a2 = rint(1, a1-1); res = a1-a2;
+    }
+  }while(gcd(res,b)!==1 && ++tries<30);
+  const s = simplify(res,b);
+  const ans = {n:s.n, d:s.d, value:s.n/s.d};
+  const op = isTambah ? '+' : '\u2212';
+  const parts = [{t:'fr',n:a1,d:b},{t:'tx',v:' '+op+' '},{t:'fr',n:a2,d:b},{t:'tx',v:' = ?'}];
+  const wrongs = fracDistractors({n:res,d:b},3);
+  return {topic:isTambah?'tambah':'kurang', parts, ans,
+    choices:[[ {kind:'frac',n:s.n,d:s.d,value:ans.value} ], wrongs.map(f=>({kind:'frac',n:f.n,d:f.d,value:f.n/f.d}))]};
+}
+function genKali(){
+  const [d0,d1] = dRange(); const [n0,n1] = nRange();
+  const b1 = rint(d0,d1), b2 = rint(d0,d1);
+  const a1 = rint(n0, Math.min(n1,b1-1)), a2 = rint(n0, Math.min(n1,b2-1));
+  const rn = a1*a2, rd = b1*b2;
+  const s = simplify(rn,rd);
+  const ans = {n:s.n, d:s.d, value:s.n/s.d};
+  const parts = [{t:'fr',n:a1,d:b1},{t:'tx',v:' \u00D7 '},{t:'fr',n:a2,d:b2},{t:'tx',v:' = ?'}];
+  const wrongs = fracDistractors({n:rn,d:rd},3);
+  return {topic:'kali', parts, ans,
+    choices:[[ {kind:'frac',n:s.n,d:s.d,value:ans.value} ], wrongs.map(f=>({kind:'frac',n:f.n,d:f.d,value:f.n/f.d}))]};
+}
+function genBagi(){
+  const shape = pickA(['wOf','fOw']);
+  if(shape==='wOf'){
+    const [n0,n1] = nRange();
+    const w = rint(Math.max(1,n0), n1);
+    const d = rint(2, Math.max(3, Math.min(8, dRange()[1])));
+    const ans = {value:w*d, n:w*d, d:1};
+    const parts = [{t:'tx', v:w+' \u00F7 '},{t:'fr',n:1,d},{t:'tx',v:' = ?'}];
+    const wrongs = numDistractors(w*d,3,false);
+    return {topic:'bagi', parts, ans,
+      choices:[[ {kind:'num', text:String(w*d), value:w*d} ], wrongs.map(v=>({kind:'num',text:String(v),value:v}))]};
+  }
+  const [d0,d1] = dRange();
+  const d = rint(d0,d1), w = rint(2, Math.max(3, Math.min(6, dRange()[1])));
+  const rn = 1, rd = d*w;
+  const ans = {n:rn, d:rd, value:rn/rd};
+  const parts = [{t:'fr',n:1,d},{t:'tx',v:' \u00F7 '+w+' = ?'}];
+  const wrongs = fracDistractors({n:1,d},3).map(f=>({n:f.n,d:f.d*w||f.d}));
+  const fixed = wrongs.map(f=>simplify(f.n,f.d));
+  return {topic:'bagi', parts, ans,
+    choices:[[ {kind:'frac',n:1,d:rd,value:ans.value} ], fixed.map(f=>({kind:'frac',n:f.n,d:f.d,value:f.n/f.d}))]};
+}
+function genDesimal(){
+  const dens = decDens();
+  let a,b,v, ok=false, guard=0;
+  while(!ok && guard++<60){
+    b = pickA(dens); a = rint(1,b-1); v = a/b;
+    ok = Math.abs(Math.round(v*1000)/1000 - v) < 1e-9;
+  }
+  const ans = {value:v, dec:true};
+  const parts = [{t:'fr',n:a,d:b},{t:'tx',v:' = ?'}];
+  const wrongs = numDistractors(v,3,true);
+  const mk = x => ({kind:'text', text:fmtDec(x), value:x});
+  return {topic:'desimal', parts, ans, hint:'Tulis pakai koma, contoh: 0,5',
+    choices:[[mk(v)], wrongs.map(mk)]};
+}
+function genPersen(){
+  const dens = pctDens();
+  const b = pickA(dens), a = rint(1,b-1);
+  const pct = Math.round(a*100/b);
+  const ans = {value:pct, pct:true};
+  const parts = [{t:'fr',n:a,d:b},{t:'tx',v:' = ? %'}];
+  const wrongs = numDistractors(pct,3,false);
+  const mk = x => ({kind:'text', text:x+'%', value:x});
+  return {topic:'persen', parts, ans, hint:'Cukup angkanya saja, contoh: 50',
+    choices:[[mk(pct)], wrongs.map(mk)]};
+}
+
+function genQuestion(topic){
+  let q;
+  switch(topic){
+    case 'pecahan': q = genPecahan(); break;
+    case 'senilai': q = genSenilai(); break;
+    case 'tambah':  q = genTambahKurang(true); break;
+    case 'kurang':  q = genTambahKurang(false); break;
+    case 'kali':    q = genKali(); break;
+    case 'bagi':    q = genBagi(); break;
+    case 'desimal': q = genDesimal(); break;
+    case 'persen':  q = genPersen(); break;
+  }
+  q.mc = Math.random()*100 < S.pgPct;
+  if(q.mc && q.topic==='senilai' && !q.choices.length){
+    // kalau soal senilai isian blank diubah jadi pilihan ganda angka
+    const correct = q.ans.value;
+    const wrongs = numDistractors(correct,3,false);
+    q.choices = [[ {kind:'num', text:String(correct), value:correct} ],
+                 wrongs.map(v=>({kind:'num',text:String(v),value:v}))];
+  }
+  // susun teks polos untuk umpan balik
+  q.plain = q.parts.map(p=>{
+    if(p.t==='tx') return p.v.replace(' = ?','=').replace(' ?','...').trim();
+    if(p.t==='fr'){
+      if(p.blank==='n') return '?/'+p.d;
+      if(p.blank==='d') return p.n+'/?';
+      return plainFrac(p.n,p.d);
+    }
+    return '';
+  }).join(' ').replace(/\s+/g,' ').trim();
+  if(!q.mc) q.choices = null;
+  return q;
+}
+function actTopics(){
+  const t = ['pecahan'];
+  ['senilai','tambah','kurang','kali','bagi','desimal','persen'].forEach(k=>{
+    if(S.topics[k]) t.push(k);
+  });
+  return t;
+}
+function buildQuestionSet(n){
+  const acts = actTopics();
+  const extras = shuffle(acts.slice(1));
+  const cycle = ['pecahan', ...extras];
+  const out = [];
+  for(let i=0;i<n;i++) out.push(genQuestion(cycle[i%cycle.length]));
+  return out;
+}
+</script>
+<script>
+/* =====================================================
+   LOGIKA GAME
+===================================================== */
+/* ---------- status & simpanan ---------- */
+const SKEY = 'pcc-settings-v1';
+let S = {timeSec:30, count:10, pgPct:60, randLvl:2,
+  topics:{senilai:true,tambah:true,kurang:true,kali:true,bagi:true,desimal:true,persen:true},
+  musicOn:true, sfxOn:true};
+function saveS(){ try{ localStorage.setItem(SKEY, JSON.stringify(S)); }catch(e){} }
+function loadS(){
+  try{
+    const r = localStorage.getItem(SKEY);
+    if(r){
+      const o = JSON.parse(r);
+      Object.assign(S, o);
+      S.topics = Object.assign({senilai:true,tambah:true,kurang:true,kali:true,bagi:true,desimal:true,persen:true}, o.topics||{});
+      S.musicOn = o.musicOn!==false; S.sfxOn = o.sfxOn!==false;
+    }
+  }catch(e){}
+}
+
+const TIME_OPTS = [
+  {sec:10,  big:'10 DETIK', desc:'Kilat! Buat yang jago'},
+  {sec:30,  big:'30 DETIK', desc:'Gesit! Tantangan pas'},
+  {sec:60,  big:'1 MENIT',  desc:'Santai, santai aja~'},
+  {sec:120, big:'2 MENIT',  desc:'Santai banget, pelan-pelan'},
+  {sec:300, big:'5 MENIT',  desc:'Santai poll! Gak usah buru-buru'}
+];
+const COUNT_OPTS = [
+  {n:10, big:'10 SOAL', desc:'Pemanasan dulu'},
+  {n:20, big:'20 SOAL', desc:'Standar bintang lima'},
+  {n:30, big:'30 SOAL', desc:'Maraton super hebat'}
+];
+
+/* ---------- util UI ---------- */
+let curScr = 'home';
+function go(name){
+  $$('.screen').forEach(e=>e.classList.remove('active'));
+  $('#scr-'+name).classList.add('active');
+  curScr = name;
+  SFX.swoosh();
+}
+let toastT = null;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2100);
+}
+function confetti(){
+  const fx = $('#fx');
+  const colors = ['#FF8A3D','#4CAF50','#42A5F5','#FFD93B','#FF7BAC','#B388FF'];
+  for(let i=0;i<28;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    const s = 6 + Math.random()*10;
+    c.style.cssText = 'left:'+(Math.random()*100)+'vw;width:'+s+'px;height:'+(s*1.4)
+      +'px;background:'+pickA(colors)+';border-radius:'+(Math.random()<.5?'50%':'3px')
+      +';animation-duration:'+(0.8+Math.random()*0.9)+'s;animation-delay:'+(Math.random()*0.25)+'s';
+    fx.appendChild(c);
+    c.addEventListener('animationend', ()=>c.remove());
+  }
+}
+function scorePop(txt){
+  const d = document.createElement('div');
+  d.className = 'scorepop'; d.textContent = txt;
+  $('#fx').appendChild(d);
+  setTimeout(()=>d.remove(), 950);
+}
+function faceGood(){
+  return '<svg class="fb-face" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#66BB6A" stroke="#5D4037" stroke-width="6"/><circle cx="42" cy="50" r="6" fill="#5D4037"/><circle cx="78" cy="50" r="6" fill="#5D4037"/><path d="M36 70 Q60 92 84 70" stroke="#5D4037" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="32" cy="66" r="7" fill="#FFB59B" opacity=".9"/><circle cx="88" cy="66" r="7" fill="#FFB59B" opacity=".9"/></svg>';
+}
+function faceBad(){
+  return '<svg class="fb-face" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#EF5350" stroke="#5D4037" stroke-width="6"/><path d="M36 42 l14 14 M50 42 l-14 14" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/><path d="M70 42 l14 14 M84 42 l-14 14" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/><path d="M38 84 Q60 68 82 84" stroke="#5D4037" stroke-width="7" fill="none" stroke-linecap="round"/></svg>';
+}
+function faceSleep(){
+  return '<svg class="fb-face" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#42A5F5" stroke="#5D4037" stroke-width="6"/><path d="M34 52 q8 8 16 0 M70 52 q8 8 16 0" stroke="#5D4037" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M40 82 Q60 70 80 82" stroke="#5D4037" stroke-width="7" fill="none" stroke-linecap="round"/><text x="88" y="34" font-size="26" fill="#fff" font-family="Arial">z</text><text x="98" y="20" font-size="18" fill="#fff" font-family="Arial">z</text></svg>';
+}
+
+/* ---------- beranda ---------- */
+function renderHomeOpts(){
+  const tb = $('#timeOpts'); tb.innerHTML = '';
+  TIME_OPTS.forEach(o=>{
+    const b = document.createElement('button');
+    b.className = 'tbtn' + (S.timeSec===o.sec ? ' sel' : '');
+    b.innerHTML = '<span class="big">'+o.big+'</span><span class="desc">'+o.desc+'</span>';
+    b.addEventListener('click', ()=>{ S.timeSec = o.sec; saveS(); renderHomeOpts(); });
+    tb.appendChild(b);
+  });
+  const cb = $('#countOpts'); cb.innerHTML = '';
+  COUNT_OPTS.forEach(o=>{
+    const b = document.createElement('button');
+    b.className = 'tbtn' + (S.count===o.n ? ' sel' : '');
+    b.innerHTML = '<span class="big">'+o.big+'</span><span class="desc">'+o.desc+'</span>';
+    b.addEventListener('click', ()=>{ S.count = o.n; saveS(); renderHomeOpts(); });
+    cb.appendChild(b);
+  });
+}
+
+/* ---------- pengaturan ---------- */
+function applySettingsUI(){
+  $('#pgRange').value = S.pgPct;
+  $('#isianRange').value = 100 - S.pgPct;
+  $('#pgVal').textContent = S.pgPct + '%';
+  $('#isianVal').textContent = (100 - S.pgPct) + '%';
+  $$('#randSeg button').forEach(b=>b.classList.toggle('sel', +b.dataset.lvl===S.randLvl));
+  ['senilai','tambah','kurang','kali','bagi','desimal','persen'].forEach(k=>{
+    $('#sw-'+k).checked = !!S.topics[k];
+  });
+  $('#btnMusic').classList.toggle('off', !S.musicOn);
+  $('#btnSfx').classList.toggle('off', !S.sfxOn);
+  renderHomeOpts();
+}
+
+/* ---------- permainan ---------- */
+let G = null, B = '';
+let timerId = null, remain = 0, lastTick = -1;
+let lastFb = 0, fbTimer = null;
+const curQ = () => G ? G.qs[G.idx] : null;
+
+function fmtTime(s){
+  s = Math.max(0, Math.ceil(s));
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+function updateTimerUI(){
+  $('#timeTxt').textContent = fmtTime(remain);
+  const fill = $('#timerFill');
+  const pct = Math.max(0, remain/S.timeSec*100);
+  fill.style.width = pct + '%';
+  fill.className = pct<=17 ? 'low' : pct<=40 ? 'mid' : '';
+  $('#pillTime').classList.toggle('low', remain<=5.05);
+}
+function startTimer(sec){
+  stopTimer();
+  remain = sec; lastTick = -1;
+  updateTimerUI();
+  const end = performance.now() + sec*1000;
+  timerId = setInterval(()=>{
+    remain = (end - performance.now())/1000;
+    if(remain < 0) remain = 0;
+    updateTimerUI();
+    const s = Math.ceil(remain);
+    if(s<=5 && s>0 && s!==lastTick){ lastTick = s; SFX.tick(); }
+    if(remain <= 0){ stopTimer(); onTimeout(); }
+  }, 100);
+}
+function stopTimer(){ if(timerId){ clearInterval(timerId); timerId = null; } }
+
+function startGame(){
+  G = {qs:buildQuestionSet(S.count), idx:0, score:0, correct:0, wrong:0, timeout:0,
+       perTopic:{}, locked:false, mcPending:false};
+  $('#scoreTxt').textContent = '0';
+  go('game');
+  renderQuestion();
+}
+function renderQuestion(){
+  const q = curQ();
+  $('#pillQ').textContent = 'Soal ' + (G.idx+1) + '/' + G.qs.length;
+  $('#qChip').textContent = TOPIC_LABEL[q.topic];
+  const vis = $('#qVisual');
+  if(q.visual){ vis.innerHTML = q.visual; vis.classList.add('has'); }
+  else { vis.innerHTML = ''; vis.classList.remove('has'); }
+  $('#qText').innerHTML = q.parts.map(p=>{
+    if(p.t==='tx') return '<span>'+p.v+'</span>';
+    if(p.t==='fr') return fracHTML(p.n, p.d, p.blank);
+    return '';
+  }).join(' ');
+  const hint = $('#qHint');
+  if(q.hint && !q.mc){ hint.textContent = q.hint; hint.classList.add('has'); }
+  else { hint.classList.remove('has'); hint.textContent = ''; }
+  G.locked = false; G.mcPending = false;
+  if(q.mc) renderMC(q); else renderInput(q);
+  startTimer(S.timeSec);
+}
+function choiceHTML(o){
+  if(o.kind==='frac') return fracHTML(o.n, o.d, null);
+  return '<span>'+o.text+'</span>';
+}
+function renderMC(q){
+  const opts = shuffle([...q.choices[0], ...q.choices[1]]);
+  const box = $('#answers');
+  box.innerHTML = '<div class="mcgrid"></div>';
+  const grid = box.firstChild;
+  const letters = ['A','B','C','D'];
+  opts.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.innerHTML = '<span class="badge">'+letters[i]+'</span>' + choiceHTML(o);
+    b.addEventListener('click', ()=>{
+      if(G.locked || G.mcPending) return;
+      G.mcPending = true;
+      b.classList.add('pick');
+      setTimeout(()=>checkValue(o.value), 320);
+    });
+    grid.appendChild(b);
+  });
+}
+const ICON_BACK = '<svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>';
+function padBtn(k, cls, label){
+  return '<button class="padkey'+(cls?' '+cls:'')+'" data-k="'+k+'">'+label+'</button>';
+}
+function renderInput(){
+  const box = $('#answers');
+  box.innerHTML =
+    '<div class="inputzone">'
+    + '<div class="preview" id="preview"></div>'
+    + '<div class="numpad">'
+    + padBtn('1','','1')+padBtn('2','','2')+padBtn('3','','3')+padBtn('back','alt',ICON_BACK)
+    + padBtn('4','','4')+padBtn('5','','5')+padBtn('6','','6')+padBtn('C','alt','C')
+    + padBtn('7','','7')+padBtn('8','','8')+padBtn('9','','9')+padBtn('/','alt','/')
+    + padBtn(',','alt',',')+padBtn('0','','0')+padBtn('ok','ok','OK!')
+    + '</div></div>';
+  $$('#answers .padkey').forEach(b=>b.addEventListener('click', ()=>onPad(b.dataset.k)));
+  B = '';
+  updatePreview();
+}
+function updatePreview(){
+  const pv = $('#preview');
+  if(!pv) return;
+  let html;
+  if(!B) html = '<span class="ph">?</span>';
+  else if(B.includes('/')){
+    const seg = B.split('/');
+    html = fracHTML(seg[0]||'?', seg[1]||'?', null);
+  }
+  else html = '<span>'+B+'</span>';
+  pv.innerHTML = html;
+  const q = curQ();
+  if(q && q.blank){
+    const bl = $('#qText .blank');
+    if(bl) bl.textContent = B || '?';
+  }
+}
+function onPad(k){
+  if(!G || G.locked) return;
+  const q = curQ();
+  if(!q || q.mc) return;
+  if(k==='back'){ B = B.slice(0,-1); SFX.key(); }
+  else if(k==='C'){ B = ''; SFX.key(); }
+  else if(k==='ok'){ submitInput(); return; }
+  else{
+    if(B.length >= 8) return;
+    if(k===',' && (B.includes(',') || B.includes('/'))) return;
+    if(k==='/' && (B.includes('/') || B.includes(','))) return;
+    B += k; SFX.key();
+  }
+  updatePreview();
+}
+function parseInput(str){
+  if(!str) return {ok:false};
+  if(str.includes('/')){
+    const seg = str.split('/');
+    if(seg.length !== 2) return {ok:false};
+    const n = parseInt(seg[0],10), d = parseInt(seg[1],10);
+    if(isNaN(n) || isNaN(d) || d<=0 || n<0) return {ok:false};
+    return {ok:true, value:n/d};
+  }
+  const v = parseFloat(str.replace(',', '.'));
+  if(isNaN(v) || v < 0) return {ok:false};
+  return {ok:true, value:v};
+}
+function submitInput(){
+  const p = parseInput(B);
+  if(!p.ok){
+    const pv = $('#preview');
+    if(pv){ pv.classList.remove('shake'); void pv.offsetWidth; pv.classList.add('shake'); }
+    SFX.pop();
+    return;
+  }
+  checkValue(p.value);
+}
+function ansHTML(q){
+  const a = q.ans;
+  if(a.n!==undefined && a.d!==undefined && a.d!==1) return fracHTML(a.n, a.d, null);
+  if(a.pct) return '<span>'+a.value+'%</span>';
+  if(a.dec) return '<span>'+fmtDec(a.value)+'</span>';
+  return '<span>'+a.value+'</span>';
+}
+function checkValue(v){
+  if(!G || G.locked) return;
+  G.locked = true;
+  stopTimer();
+  const q = curQ();
+  G.perTopic[q.topic] = G.perTopic[q.topic] || {ok:0, tot:0};
+  G.perTopic[q.topic].tot++;
+  const good = Math.abs(v - q.ans.value) < 1e-9;
+  if(good){
+    G.correct++;
+    G.perTopic[q.topic].ok++;
+    const bonus = Math.round(Math.max(0,remain)/S.timeSec*60);
+    const add = 100 + bonus;
+    G.score += add;
+    $('#scoreTxt').textContent = G.score;
+    SFX.correct(); confetti(); scorePop('+'+add);
+    showFeedback('good', '<span class="plus">+'+add+'</span>&nbsp;poin!');
+  }else{
+    G.wrong++;
+    SFX.wrong();
+    showFeedback('bad', 'Jawaban: '+ansHTML(q));
+  }
+}
+function onTimeout(){
+  if(!G || G.locked) return;
+  G.locked = true;
+  const q = curQ();
+  G.perTopic[q.topic] = G.perTopic[q.topic] || {ok:0, tot:0};
+  G.perTopic[q.topic].tot++;
+  G.timeout++;
+  SFX.timeup();
+  showFeedback('timeout', 'Jawaban: '+ansHTML(q));
+}
+function showFeedback(kind, subHTML){
+  const st = $('#fbStamp');
+  st.textContent = kind==='good' ? 'BENAR!' : kind==='timeout' ? 'WAKTU HABIS!' : 'SALAH!';
+  st.className = 'stamp ' + (kind==='good' ? 'good' : 'badw');
+  $('#fbFaceWrap').innerHTML = kind==='good' ? faceGood() : kind==='timeout' ? faceSleep() : faceBad();
+  $('#fbSub').innerHTML = subHTML;
+  $('#fbOverlay').classList.add('show');
+  lastFb = Date.now();
+  clearTimeout(fbTimer);
+  fbTimer = setTimeout(advance, kind==='good' ? 1500 : 2600);
+}
+function advance(){
+  if(!$('#fbOverlay').classList.contains('show')) return;
+  clearTimeout(fbTimer);
+  $('#fbOverlay').classList.remove('show');
+  G.idx++;
+  if(G.idx >= G.qs.length) showResults();
+  else { G.locked = false; G.mcPending = false; renderQuestion(); }
+}
+
+/* ---------- hasil ---------- */
+function showResults(){
+  stopTimer();
+  go('result');
+  const total = G.qs.length, pct = G.correct/total;
+  const stars = pct>=0.9 ? 3 : pct>=0.7 ? 2 : pct>=0.4 ? 1 : 0;
+  $('#resTitle').textContent =
+    stars===3 ? 'LUAR BIASA! JUARA PECAHAN!' :
+    stars===2 ? 'HEBAT SEKALI!' :
+    stars===1 ? 'BAGUS! AYO TINGKATKAN!' : 'JANGAN MENYERAH, YUK LAGI!';
+  $('#starsBox').innerHTML = [0,1,2].map(i=>{
+    const cls = i<stars ? 'st-on' : 'st-off';
+    return '<svg viewBox="0 0 24 24" class="'+cls+'" style="animation-delay:'+(0.15+i*0.28).toFixed(2)
+      +'s"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+  }).join('');
+  setTimeout(()=>SFX.fanfare(), 80);
+  for(let i=0;i<stars;i++) setTimeout(()=>SFX.ding(), 350+i*280);
+  $('#stOk').textContent = G.correct;
+  $('#stNo').textContent = G.wrong;
+  $('#stTo').textContent = G.timeout;
+  const tips = [];
+  const weak = Object.entries(G.perTopic)
+    .filter(([,v])=>v.tot>0 && v.ok/v.tot<0.6)
+    .sort((a,b)=>a[1].ok/a[1].tot - b[1].ok/b[1].tot);
+  weak.slice(0,2).forEach(([k])=>tips.push('Besok latihan lagi ya: '+TOPIC_LABEL[k]));
+  if(pct===1) tips.unshift('Sempurna! Semua soal benar, kamu keren banget!');
+  else if(stars>=2) tips.push('Kamu siap naik level! Coba waktu lebih cepat atau angka yang lebih kacau!');
+  else tips.push('Mampir lagi ke PETUNJUK, lalu latihan pelan-pelan. Kamu pasti bisa!');
+  $('#resTips').innerHTML = tips.map(t=>
+    '<div class="tip"><svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg><span>'+t+'</span></div>'
+  ).join('');
+  const el = $('#resScoreTxt'), t0 = performance.now();
+  (function tickCount(now){
+    const p = Math.min(1, (now-t0)/900);
+    el.textContent = Math.round(G.score * p * (2-p));
+    if(p<1) requestAnimationFrame(tickCount);
+  })(t0);
+}
+
+/* ---------- fullscreen ---------- */
+function toggleFS(){
+  const d = document, el = d.documentElement;
+  const isFS = d.fullscreenElement || d.webkitFullscreenElement;
+  const fn = isFS ? (d.exitFullscreen || d.webkitExitFullscreen) : (el.requestFullscreen || el.webkitRequestFullscreen);
+  if(fn){
+    const r = fn.call(isFS ? d : el);
+    if(r && r.catch) r.catch(()=>toast('Layar penuh tidak didukung di sini ya!'));
+  } else toast('Layar penuh tidak didukung di sini ya!');
+}
+
+/* ---------- ikatan tombol & keyboard ---------- */
+function bindAll(){
+  $('#btnStart').addEventListener('click', startGame);
+  $('#btnSettings').addEventListener('click', ()=>go('settings'));
+  $('#btnHelp').addEventListener('click', ()=>go('help'));
+  $('#btnHelpBack').addEventListener('click', ()=>go('home'));
+  $('#btnSetBack').addEventListener('click', ()=>go('home'));
+  $('#btnAgain').addEventListener('click', startGame);
+  $('#btnHome').addEventListener('click', ()=>go('home'));
+  $('#btnMusic').addEventListener('click', ()=>setMusicOn(!S.musicOn));
+  $('#btnSfx').addEventListener('click', ()=>setSfxOn(!S.sfxOn));
+  $('#btnFs').addEventListener('click', toggleFS);
+  $('#btnQuit').addEventListener('click', ()=>$('#modal').classList.add('show'));
+  $('#modalNo').addEventListener('click', ()=>$('#modal').classList.remove('show'));
+  $('#modalYes').addEventListener('click', ()=>{
+    $('#modal').classList.remove('show');
+    $('#fbOverlay').classList.remove('show');
+    clearTimeout(fbTimer);
+    stopTimer();
+    go('home');
+  });
+  $('#fbOverlay').addEventListener('click', ()=>{ if(Date.now()-lastFb > 500) advance(); });
+  $('#pgRange').addEventListener('input', e=>{
+    const v = +e.target.value;
+    S.pgPct = v;
+    $('#isianRange').value = 100-v;
+    $('#pgVal').textContent = v+'%';
+    $('#isianVal').textContent = (100-v)+'%';
+    saveS();
+  });
+  $('#isianRange').addEventListener('input', e=>{
+    const v = +e.target.value;
+    S.pgPct = 100-v;
+    $('#pgRange').value = S.pgPct;
+    $('#pgVal').textContent = S.pgPct+'%';
+    $('#isianVal').textContent = v+'%';
+    saveS();
+  });
+  $$('#randSeg button').forEach(b=>b.addEventListener('click', ()=>{
+    S.randLvl = +b.dataset.lvl;
+    $$('#randSeg button').forEach(x=>x.classList.toggle('sel', x===b));
+    saveS();
+  }));
+  ['senilai','tambah','kurang','kali','bagi','desimal','persen'].forEach(k=>{
+    $('#sw-'+k).addEventListener('change', e=>{
+      if(!e.target.checked && actTopics().length===1){
+        e.target.checked = true;
+        toast('Minimal satu materi harus aktif ya!');
+        return;
+      }
+      S.topics[k] = e.target.checked;
+      saveS();
+    });
+  });
+  document.addEventListener('click', e=>{
+    const b = e.target.closest('button');
+    if(b && !b.classList.contains('padkey')) SFX.click();
+  });
+  document.addEventListener('keydown', e=>{
+    if(curScr!=='game' || !G || G.locked) return;
+    const q = curQ();
+    if(!q) return;
+    if(q.mc){
+      const map = {'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3};
+      const i = map[e.key.toLowerCase()];
+      if(i!==undefined){ const btn = $$('#answers .choice')[i]; if(btn) btn.click(); }
+      return;
+    }
+    if(/^[0-9]$/.test(e.key)) onPad(e.key);
+    else if(e.key===',' || e.key==='.') onPad(',');
+    else if(e.key==='/') onPad('/');
+    else if(e.key==='Backspace') onPad('back');
+    else if(e.key==='Enter') onPad('ok');
+  });
+  document.addEventListener('pointerdown', ()=>ensureCtx(), {passive:true});
+}
+
+/* ---------- mulai ---------- */
+loadS();
+applySettingsUI();
+bindAll();
+</script>
+</body>
+</html>
